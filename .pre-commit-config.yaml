@@ -14,82 +14,121 @@ repos:
         rev: v2.3.0
         hooks:
         -   id: check-ast
+            name: check-ast
             description: Simply check whether files parse as valid python.
         -   id: check-builtin-literals
+            name: check-builtin-literals
             description: Require literal syntax when initializing empty,
                          or zero Python builtin types.
         -   id: check-docstring-first
+            name: check-docstring-first
             description: Checks for a common error of placing code before the docstring.
         -   id: check-added-large-files
+            name: check-added-large-files
             description: Prevent giant files from being committed.
-        -   id: check-executables-have-shebangs
-            description: Checks that non-binary executables have a proper shebang.
         -   id: check-merge-conflict
+            name: check-merge-conflict
             description: Check for files that contain merge conflict strings.
         -   id: check-symlinks
+            name: check-symlinks
             description: Checks for symlinks which do not point to anything.
         -   id: check-yaml
+            name: check-yaml
             description: Attempts to load all yaml files to verify syntax.
+        -   id: check-toml
+            name: check-toml
+            description: Attempts to load all TOML files to verify syntax.
+        -   id: debug-statements
+            name: debug-statements
+            description: Check for debugger imports and py37+ breakpoint() calls in python source.
         -   id: detect-private-key
+            name: detect-private-key
             description: Checks for the existence of private keys.
         -   id: end-of-file-fixer
+            name: end-of-file-fixer
             description: Makes sure files end in a newline and only a newline.
-        -   id: flake8
-            description: Python style guide enforcement
-            args: [
-                '--max-line-length=90',
-                '--config=setup.cfg',
-                '--ignore=
-                    # Ignore warnings about:
-                    S101,  # Use of assert
-                    S404,  # importing subprocess
-                    S603,  # calling subprocess.Popen without shell=True
-                    S607,  # calling subprocess.Popen without a full path to executable
-                '
-            ]
-            additional_dependencies: [
-                flake8-bandit,
-                flake8-black,
-                flake8-blind-except,
-                flake8-builtins,
-                flake8-deprecated,
-                flake8-eradicate,
-                flake8-isort,
-                flake8-pytest,
-                # flake8-spellcheck,
-                flake8-tabs,
-            ]
         -   id: trailing-whitespace
+            name: trailing-whitespace
+            description: Trims trailing whitespace
+        -   id: requirements-txt-fixer
+            name: requirements-txt-fixer
+            description: Sorts entries in requirements.txt
 
-    # Python minor syntax related checks
-    -   repo: https://github.com/pre-commit/pygrep-hooks
-        rev: v1.4.1
+    -   repo: local
         hooks:
+        # Python minor syntax related checks
+        # https://github.com/Pike/pygrep
         -   id: python-check-mock-methods
-            description: Prevent common mistakes of assert mck.not_called(),
-                         assert mck.called_once_with(...) and mck.assert_called.
-        -   id: python-no-eval
-            description: A quick check for the eval() built-in function
-        -   id: python-no-log-warn
-            description: A quick check for the deprecated .warn() method of python loggers
-        -   id: python-use-type-annotations
-            description: Enforce that python3.6+ type annotations are used instead of
-                         type comments
-        -   id: rst-backticks
-            description: Detect common mistake of using single backticks when writing rst
+            name: python-check-mock-methods
+            description: Prevent common mistakes of `assert mck.not_called()`, `assert mck.called_once_with(...)`
+                        and `mck.assert_called`.
+            language: pygrep
+            entry: >
+                (?x)(
+                    assert .*\.(
+                        not_called|
+                        called_
+                    )|
+                    \.assert_(
+                        any_call|
+                        called|
+                        called_once|
+                        called_once_with|
+                        called_with|
+                        has_calls|
+                        not_called
+                    )($|[^(\w])
+                )
+            types: [python]
 
-    # Python security check
-    -   repo: https://github.com/Lucas-C/pre-commit-hooks-bandit
-        rev: v1.0.4
-        hooks:
-        -   id: python-bandit-vulnerability-check
+        -   id: python-no-eval
+            name: python-no-eval
+            description: 'A quick check for the `eval()` built-in function'
+            entry: '\beval\('
+            language: pygrep
+            types: [python]
+
+        -   id: python-no-log-warn
+            name: python-no-log-warn
+            description: 'A quick check for the deprecated `.warn()` method of python loggers'
+            entry: '(?<!warnings)\.warn\('
+            language: pygrep
+            types: [python]
+
+        -   id: python-use-type-annotations
+            name: python-use-type-annotations
+            description: 'Enforce that python3.6+ type annotations are used instead of type comments'
+            entry: '# type(?!: *ignore *($|#))'
+            language: pygrep
+            types: [python]
+
+        # Python security check
+        # https://bandit.readthedocs.io/en/latest/
+        -   id: bandit
+            name: bandit
             description: Find common security issues in your Python code using bandit
+            entry: bandit
             args: [
-                "-ll", # Ignore LOW severity issues
-                "--recursive",
-                "--exclude tests"
+                '-ll',
+                '--ini', 'setup.cfg',
+                '--recursive',
             ]
-            files: .py$
+            language: python
+            types: [python]
+
+        # Vulture
+        # https://github.com/jendrikseipp/vulture
+        -   id: vulture
+            name: vulture
+            description: Find dead Python code
+            entry: vulture
+            args: [
+                "--min-confidence", "90",
+                "--exclude", "*env*", "docs/",
+                ".",
+            ]
+            language: system
+            types: [python]
 
     # Jira Ticket Link Prepender
     -   repo: https://github.com/mmphego/prepend-jira-ticket-link
@@ -97,14 +136,64 @@ repos:
         hooks:
         -   id: prepend-jira-link
             description: Appends ticket number and link below commit message
+
     ####################################### Linters ######################################
-    # YAML Linter
-    -   repo: https://github.com/adrienverge/yamllint.git
-        rev: v1.17.0
+    -   repo: local
         hooks:
+        # Flake8 Linter
+        # https://flake8.pycqa.org/en/latest/
+        -   id: flake8
+            name: flake8
+            description: Python style guide enforcement
+            entry: flake8
+            args: ["--config=setup.cfg"]
+            additional_dependencies: [
+                flake8-2020, # flake8 plugin which checks for misuse of `sys.version` or `sys.version_info`
+                flake8-blind-except, # A flake8 extension that checks for blind except: statements
+                flake8-bugbear, # A plugin for flake8 finding likely bugs and design problems in your program.
+                                # Contains warnings that don't belong in pyflakes and pycodestyle.
+                flake8-builtins, # Check for python builtins being used as variables or parameters.
+                flake8-comprehensions, # It helps you write better list/set/dict comprehensions.
+                flake8-copyright, # Adds copyright checks to flake8
+                flake8-deprecated, # Warns about deprecated method calls.
+                dlint, # Dlint is a tool for encouraging best coding practices and helping ensure we're writing secure Python code.
+                flake8-docstrings, # Extension for flake8 which uses pydocstyle to check docstrings
+                flake8-eradicate, # Flake8 plugin to find commented out code
+                flake8-license,
+                pandas-vet, # A Flake8 plugin that provides opinionated linting for pandas code
+                flake8-pytest, # pytest assert checker plugin for flake8
+                flake8-variables-names, # flake8 extension that helps to make more readable variables names
+                flake8-tabs, # Tab (or Spaces) indentation style checker for flake8
+                pep8-naming, # Check PEP-8 naming conventions, plugin for flake8
+            ]
+            language: python
+            types: [python]
+
+        # MyPy Linter
+        # https://mypy.readthedocs.io/en/latest/
+        -   id: mypy
+            name: mypy
+            description: Optional static typing for Python 3 and 2 (PEP 484)
+            entry: mypy
+            args: ["--config-file", "setup.cfg"]
+            language: python
+            types: [python]
+
+        # PyDocstyle
+        # https://github.com/PyCQA/pydocstyle
+        -   id: pydocstyle
+            name: pydocstyle
+            description: pydocstyle is a static analysis tool for checking compliance with Python docstring conventions.
+            entry: pydocstyle
+            language: python
+            types: [python]
+
+        # YAML Linter
         -   id: yamllint
+            name: yamllint
             description: A linter for YAML files.
             # https://yamllint.readthedocs.io/en/stable/configuration.html#custom-configuration-without-a-config-file
+            entry: yamllint
             args: [
                 '--format', 'parsable',
                 '--strict',
@@ -114,96 +203,92 @@ repos:
                         hyphens: {max-spaces-after: 4},
                         indentation: {spaces: consistent, indent-sequences: whatever,},
                         key-duplicates: {},
-                        key-duplicates: {},
                         line-length: {max: 90}},
                     }"
             ]
+            language: system
+            types: [python]
+            additional_dependencies: [yamllint]
 
-    # Makefile Linter
-    -   repo: https://github.com/Lucas-C/pre-commit-hooks-go
-        rev: v1.0.0
-        hooks:
-        -   id: checkmake
-            description: Linter/analyzer for Makefiles
-
-    # Shell Linter
-    # NOTE: Hook requires shellcheck [installed].
-    -   repo: https://github.com/jumanjihouse/pre-commit-hooks
-        rev: 1.11.0
-        hooks:
-        -   id: script-must-have-extension
-            description: Local policy is to use .sh extension for shell scripts
-            types: [shell, executable]
+        # Shell Linter
+        # NOTE: Hook requires shellcheck [installed].
         -   id: shellcheck
-            description: ShellCheck, a static analysis tool for shell scripts
-            types: [shell, executable]
+            name: shellcheck (local)
+            language: script
+            entry: shellcheck
+            args: [-e, SC1091]
+            types: [shell]
+            additional_dependencies: [shellcheck]
 
-    # Dockerfile Linter
-    # NOTE: Hook requires Docker [installed].
-    -   repo: https://github.com/adarnimrod/docker-pre-commit
-        rev: v0.3.0
-        hooks:
-        -   id: hadolint
-        -   id: docker-compose
-        -   id: dockerfile-lint
-
-    # Prose (speech or writing) Linter
-    -   repo: https://github.com/amperser/proselint
-        rev: 0.10.2
-        hooks:
+        # Prose (speech or writing) Linter
         -   id: proselint
+            name: proselint
             description: An English prose (speech or writing) linter
+            entry: proselint
+            language: system
             types: [ rst, markdown ]
+            additional_dependencies: [proselint]
+
 
     ################################### Code Format ######################################
-
-    # Upgrade Python syntax
-    -   repo: https://github.com/asottile/pyupgrade
-        rev: v1.22.1
-        hooks:
-        -   id: pyupgrade
-            description: Automatically upgrade syntax for newer versions of the language.
-            args: ['--py3-plus']
-
-    # Add `known_third_party` to isort.cfg
-    -   repo: https://github.com/asottile/seed-isort-config
-        rev: v1.9.2
-        hooks:
-        -   id: seed-isort-config
-            description: Statically populate the `known_third_party` `isort` setting.
-
-    # Sort imports
-    -   repo: https://github.com/pre-commit/mirrors-isort
-        rev: v4.3.21
-        hooks:
-        -   id: isort
-            description: Library to sort imports.
-            args: [
-                "--force-grid-wrap=0",
-                "--line-width=90",
-                "--multi-line=3",
-                "--trailing-comma",
-                "--use-parentheses",
-            ]
-
-    # Python code format
-    -   repo: https://github.com/psf/black
-        rev: 19.3b0
-        hooks:
-        -   id: black
-            description: The uncompromising Python code formatter
-            language_version: python3.6
-
-    ###################################### Execute Tests #################################
-    # Pytest
     -   repo: local
         hooks:
-        -   id: pytest
-            name: pytest
-            description: Run local tests with Pytest
-            language: system
-            # exit instantly on first error or failed test, increase verbosity
-            entry: pytest -xsv
-            files: \test*.py$
+        # pyupgrade
+        # Upgrade Python syntax
+        -   id: pyupgrade
+            name: pyupgrade
+            description: Automatically upgrade syntax for newer versions of the language.
+            entry: pyupgrade
+            args: ['--py3-plus']
+            language: python
             types: [python]
-            always_run: true
+            additional_dependencies: [pyupgrade]
+
+        # Sort imports
+        # https://github.com/timothycrosley/isort
+        -   id: isort
+            name: isort
+            description: Library to sort imports.
+            entry: isort
+            args: [
+                "--recursive",
+                "--settings-path", "setup.cfg"
+            ]
+            language: python
+            types: [python]
+
+        # Manifest.in checker
+        # https://github.com/mgedmin/check-manifest
+        -   id: check-manifest
+            name: check-manifest
+            description: Check the completeness of MANIFEST.in for Python packages.
+            entry: check-manifest
+            language: python
+            types: [python]
+
+        # pycodestyle code format
+        # https://pypi.python.org/pypi/autopep8/
+        -   id: autopep8
+            name: autopep8
+            description: A tool that automatically formats Python code to conform to the PEP 8 style guide.
+            entry: autopep8
+            args: [
+                '--in-place',
+                '--aggressive', '--aggressive',
+                '--global-config', 'setup.cfg',
+            ]
+            language: python
+            types: [python]
+
+        # Python code format
+        # https://github.com/psf/black/
+        -   id: black
+            name: black
+            description: The uncompromising Python code formatter
+            entry: black
+            args: [
+                '--line-length', '90',
+                '--target-version', 'py36'
+            ]
+            language: python
+            types: [python]
