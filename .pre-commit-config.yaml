@@ -213,12 +213,13 @@ repos:
 
         # Shell Linter
         # NOTE: Hook requires shellcheck [installed].
+
         -   id: shellcheck
             name: shellcheck (local)
             language: script
-            entry: shellcheck
-            args: [-e, SC1091]
+            entry: scripts/shellcheck.sh
             types: [shell]
+            args: [-e, SC1091]
             additional_dependencies: [shellcheck]
 
         # Prose (speech or writing) Linter

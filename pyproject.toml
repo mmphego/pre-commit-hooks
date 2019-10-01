@@ -1,7 +1,10 @@
 # Project configuration file
 # Usage: https://github.com/toml-lang/toml
+
 [tool.black]
+# See: https://docs.google.com/document/d/1aZoIyR9tz5rCWr2qJKuMTmKp2IzHlFjrCFrpDDHFypM/edit#heading=h.95alkrtwtub0
 line-length = 90
+target-version = ['py27', 'py36']
 include = '\.pyi?$'
 exclude = '''
 /(
