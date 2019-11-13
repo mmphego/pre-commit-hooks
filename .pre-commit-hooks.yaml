@@ -106,3 +106,16 @@
     types: [python]
     require_serial: true
     additional_dependencies: [isort]
+
+# PyDocstyle
+# https://github.com/PyCQA/pydocstyle
+-   id: pydocstyle
+    name: pydocstyle
+    description: Static analysis tool for checking compliance with Python
+                 docstring conventions.
+    entry: pydocstyle
+    # args: ["--config=setup.cfg", "--count"]
+    language: python
+    types: [python]
+    require_serial: true
+    additional_dependencies: [pydocstyle]
