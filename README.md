@@ -15,7 +15,7 @@ The script will:
 # change directory
 
 # Install pre-commit package
-pip install -r requirements.txt
+pip install pre-commit
 
 # verify and mondify .pre-commit-config.yaml for your python enviroment (default Python3.6)
 notepad .pre-commit-config.yaml

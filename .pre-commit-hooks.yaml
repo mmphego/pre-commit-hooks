@@ -7,13 +7,12 @@
     name: flake8
     description: Python style guide enforcement.
     entry: flake8
-    # args: ["--config=setup.cfg"]
+    args: ["--config=setup.cfg"]
     additional_dependencies: [
         flake8,
         flake8-2020, # flake8 plugin which checks for misuse of `sys.version` or `sys.version_info`
         flake8-blind-except, # A flake8 extension that checks for blind except: statements
         flake8-bugbear, # A plugin for flake8 finding likely bugs and design problems in your program.
-                        # Contains warnings that don't belong in pyflakes and pycodestyle.
         flake8-builtins, # Check for python builtins being used as variables or parameters.
         flake8-comprehensions, # It helps you write better list/set/dict comprehensions.
         flake8-copyright, # Adds copyright checks to flake8
@@ -54,7 +53,7 @@
     name: Run Pytest
     description: Run Python unit-tests
     entry: pytest
-    # args: ["-sv"]
+    args: ["-sv"]
     language: python
     types: [python]
     language_version: python
@@ -100,7 +99,6 @@
     entry: isort
     args: [
         "--recursive",
-        # "--settings-path", "setup.cfg"
     ]
     language: python
     types: [python]
@@ -114,7 +112,6 @@
     description: Static analysis tool for checking compliance with Python
                  docstring conventions.
     entry: pydocstyle
-    # args: ["--config=setup.cfg", "--count"]
     language: python
     types: [python]
     require_serial: true
