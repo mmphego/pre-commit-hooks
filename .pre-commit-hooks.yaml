@@ -7,7 +7,7 @@
     name: flake8
     description: Python style guide enforcement.
     entry: flake8
-    # args: ["--config=configs/setup.cfg"]
+    # args: ["--config=setup.cfg"]
     additional_dependencies: [
         flake8,
         flake8-2020, # flake8 plugin which checks for misuse of `sys.version` or `sys.version_info`
@@ -60,7 +60,11 @@
     language_version: python
     require_serial: true
     stages: [push]
-    additional_dependencies: [pytest]
+    additional_dependencies: [
+        pytest,
+        pytest-cov,
+        pytest-mock
+    ]
 
 -   id: black
     name: black
@@ -71,3 +75,34 @@
     require_serial: true
     types: [python]
     additional_dependencies: [black]
+
+# pycodestyle code format
+# https://pypi.python.org/pypi/autopep8/
+-   id: autopep8
+    name: autopep8
+    description: "Automatically formats Python code to conform to the PEP 8 style guide."
+    entry: autopep8
+    args: [
+        '--in-place',
+        '--aggressive', '--aggressive',
+    ]
+    language: python
+    language_version: python3
+    types: [python]
+    require_serial: true
+    additional_dependencies: [autopep8]
+
+# Sort imports
+# https://github.com/timothycrosley/isort
+-   id: isort
+    name: isort
+    description: Automatically sort imports.
+    entry: isort
+    args: [
+        "--recursive",
+        # "--settings-path", "setup.cfg"
+    ]
+    language: python
+    types: [python]
+    require_serial: true
+    additional_dependencies: [isort]
