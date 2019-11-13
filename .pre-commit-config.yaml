@@ -11,7 +11,7 @@ repos:
     ####################################### Various Checks ###############################
     # Various checks
     -   repo: https://github.com/pre-commit/pre-commit-hooks
-        rev: v2.3.0
+        rev: v2.4.0
         hooks:
         -   id: check-ast
             name: check-ast
@@ -83,21 +83,21 @@ repos:
 
         -   id: python-no-eval
             name: python-no-eval
-            description: 'A quick check for the `eval()` built-in function'
+            description: A quick check for the `eval()` built-in function.
             entry: '\beval\('
             language: pygrep
             types: [python]
 
         -   id: python-no-log-warn
             name: python-no-log-warn
-            description: 'A quick check for the deprecated `.warn()` method of python loggers'
+            description: A quick check for the deprecated `.warn()` method of python loggers.
             entry: '(?<!warnings)\.warn\('
             language: pygrep
             types: [python]
 
         -   id: python-use-type-annotations
             name: python-use-type-annotations
-            description: 'Enforce that python3.6+ type annotations are used instead of type comments'
+            description: Enforce that python3.6+ type annotations are used instead of type comments.
             entry: '# type(?!: *ignore *($|#))'
             language: pygrep
             types: [python]
@@ -106,7 +106,7 @@ repos:
         # https://bandit.readthedocs.io/en/latest/
         -   id: bandit
             name: bandit
-            description: Find common security issues in your Python code using bandit
+            description: Find common security issues in your Python code using bandit.
             entry: bandit
             args: [
                 '-ll',
@@ -116,59 +116,9 @@ repos:
             language: python
             types: [python]
 
-        # Vulture
-        # https://github.com/jendrikseipp/vulture
-        -   id: vulture
-            name: vulture
-            description: Find dead Python code
-            entry: vulture
-            args: [
-                "--min-confidence", "90",
-                "--exclude", "*env*", "docs/",
-                ".",
-            ]
-            language: system
-            types: [python]
-
-    # Jira Ticket Link Prepender
-    -   repo: https://github.com/mmphego/prepend-jira-ticket-link
-        rev: master
-        hooks:
-        -   id: prepend-jira-link
-            description: Appends ticket number and link below commit message
-
     ####################################### Linters ######################################
     -   repo: local
         hooks:
-        # Flake8 Linter
-        # https://flake8.pycqa.org/en/latest/
-        -   id: flake8
-            name: flake8
-            description: Python style guide enforcement
-            entry: flake8
-            args: ["--config=setup.cfg"]
-            additional_dependencies: [
-                flake8-2020, # flake8 plugin which checks for misuse of `sys.version` or `sys.version_info`
-                flake8-blind-except, # A flake8 extension that checks for blind except: statements
-                flake8-bugbear, # A plugin for flake8 finding likely bugs and design problems in your program.
-                                # Contains warnings that don't belong in pyflakes and pycodestyle.
-                flake8-builtins, # Check for python builtins being used as variables or parameters.
-                flake8-comprehensions, # It helps you write better list/set/dict comprehensions.
-                flake8-copyright, # Adds copyright checks to flake8
-                flake8-deprecated, # Warns about deprecated method calls.
-                dlint, # Dlint is a tool for encouraging best coding practices and helping ensure we're writing secure Python code.
-                flake8-docstrings, # Extension for flake8 which uses pydocstyle to check docstrings
-                # flake8-eradicate, # Flake8 plugin to find commented out code
-                flake8-license,
-                pandas-vet, # A Flake8 plugin that provides opinionated linting for pandas code
-                flake8-pytest, # pytest assert checker plugin for flake8
-                flake8-variables-names, # flake8 extension that helps to make more readable variables names
-                flake8-tabs, # Tab (or Spaces) indentation style checker for flake8
-                pep8-naming, # Check PEP-8 naming conventions, plugin for flake8
-            ]
-            language: python
-            types: [python]
-
         # MyPy Linter
         # https://mypy.readthedocs.io/en/latest/
         -   id: mypy
@@ -176,16 +126,6 @@ repos:
             description: Optional static typing for Python 3 and 2 (PEP 484)
             entry: mypy
             args: ["--config-file", "setup.cfg"]
-            language: python
-            types: [python]
-
-        # PyDocstyle
-        # https://github.com/PyCQA/pydocstyle
-        -   id: pydocstyle
-            name: pydocstyle
-            description: pydocstyle is a static analysis tool for checking compliance with Python docstring conventions.
-            entry: pydocstyle
-            args: ["--config=setup.cfg", "--count"]
             language: python
             types: [python]
 
@@ -211,17 +151,6 @@ repos:
             types: [python]
             additional_dependencies: [yamllint]
 
-        # Shell Linter
-        # NOTE: Hook requires shellcheck [installed].
-
-        -   id: shellcheck
-            name: shellcheck (local)
-            language: script
-            entry: scripts/shellcheck.sh
-            types: [shell]
-            args: [-e, SC1091]
-            additional_dependencies: [shellcheck]
-
         # Prose (speech or writing) Linter
         -   id: proselint
             name: proselint
@@ -232,65 +161,13 @@ repos:
             additional_dependencies: [proselint]
 
 
-    ################################### Code Format ######################################
+    ################################### Code Analysis ####################################
     -   repo: local
         hooks:
-        # pyupgrade
-        # Upgrade Python syntax
-        -   id: pyupgrade
-            name: pyupgrade
-            description: Automatically upgrade syntax for newer versions of the language.
-            entry: pyupgrade
-            args: ['--py3-plus']
+        -   id: wily
+            name: wily
+            description: Tracking, reporting complexity of Python applications.
+            entry: wily diff
+            verbose: true
             language: python
-            types: [python]
-            additional_dependencies: [pyupgrade]
-
-        # Sort imports
-        # https://github.com/timothycrosley/isort
-        -   id: isort
-            name: isort
-            description: Library to sort imports.
-            entry: isort
-            args: [
-                "--recursive",
-                "--settings-path", "setup.cfg"
-            ]
-            language: python
-            types: [python]
-
-        # Manifest.in checker
-        # https://github.com/mgedmin/check-manifest
-        -   id: check-manifest
-            name: check-manifest
-            description: Check the completeness of MANIFEST.in for Python packages.
-            entry: check-manifest
-            language: python
-            types: [python]
-
-        # pycodestyle code format
-        # https://pypi.python.org/pypi/autopep8/
-        -   id: autopep8
-            name: autopep8
-            description: A tool that automatically formats Python code to conform to the PEP 8 style guide.
-            entry: autopep8
-            args: [
-                '--in-place',
-                '--aggressive', '--aggressive',
-                '--global-config', 'setup.cfg',
-            ]
-            language: python
-            types: [python]
-
-        # Python code format
-        # https://github.com/psf/black/
-        -   id: black
-            name: black
-            description: The uncompromising Python code formatter
-            entry: black
-            args: [
-                '--line-length', '90',
-                '--target-version', 'py36'
-            ]
-            language: python
-            types: [python]
+            additional_dependencies: [wily]
