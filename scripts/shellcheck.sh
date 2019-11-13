@@ -17,4 +17,3 @@ if ! command -v shellcheck >/dev/null  2>&1; then
 fi
 
 shellcheck "$@"
-
