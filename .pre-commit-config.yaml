@@ -13,19 +13,42 @@ repos:
     -   repo: https://github.com/mmphego/pre-commit-hooks
         rev: master
         hooks:
-            -   id: autopep8
-            -   id: black
-            -   id: flake8
-            -   id: isort
-            -   id: mypy
-            -   id: prepend-jira-link
-            -   id: proselint
-            -   id: pydocstyle
-            -   id: pytest
-            -   id: python-check-mock-methods
-            -   id: python-no-eval
-            -   id: python-no-log-warn
-            -   id: python-use-type-annotations
-            -   id: shellcheck
-            -   id: wily
-            -   id: yamllint
+        -   id: autopep8
+        -   id: black
+        -   id: flake8
+        -   id: isort
+        -   id: mypy
+        -   id: prepend-jira-link
+        -   id: proselint
+        -   id: pydocstyle
+        -   id: pytest
+        -   id: python-check-mock-methods
+        -   id: python-no-eval
+        -   id: python-no-log-warn
+        -   id: python-use-type-annotations
+        -   id: shellcheck
+        -   id: wily
+        -   id: yamllint
+
+    -   repo: https://github.com/pre-commit/pre-commit-hooks
+        rev: v2.4.0  # Use the ref you want to point at
+        hooks:
+        -   id: check-added-large-files
+        -   id: check-ast
+        -   id: check-builtin-literals
+        -   id: check-byte-order-marker
+        -   id: check-case-conflict
+        -   id: check-docstring-first
+        -   id: check-executables-have-shebangs
+        -   id: check-json
+        -   id: check-merge-conflict
+        -   id: check-symlinks
+        -   id: check-toml
+        -   id: check-xml
+        -   id: check-yaml
+        -   id: detect-private-key
+        -   id: end-of-file-fixer
+        -   id: pretty-format-json
+        -   id: requirements-txt-fixer
+        -   id: sort-simple-yaml
+        -   id: trailing-whitespace

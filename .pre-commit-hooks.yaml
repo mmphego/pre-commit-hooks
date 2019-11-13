@@ -53,7 +53,6 @@
     name: Run Pytest
     description: Run Python unit-tests
     entry: pytest
-    args: ["-sv"]
     language: python
     types: [python]
     language_version: python

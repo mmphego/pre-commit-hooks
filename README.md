@@ -4,6 +4,21 @@ A personal collection of pre-commit hooks that can makes my life easier :)
 
 I created a blog post *[Why You Need To Stop Using Git-Hooks](https://blog.mphomphego.co.za/blog/2019/10/03/Why-you-need-to-stop-using-Git-Hooks.html)*, if you would like to read more about pre-commit.
 
+# Option 1
+
+## Using pre-commit-hooks with pre-commit
+
+Add this to your `.pre-commit-config.yaml`
+```yaml
+-   repo: https://github.com/mmphego/pre-commit-hooks
+    rev: master  # Use the ref you want to point at
+    hooks:
+    -   id: flake8
+    -   id: black
+    -   id: pytest
+```
+
+# Option 2
 ## Installation
 
 On the root directory, you will find a script: `setup_hooks.sh` and the script will:
