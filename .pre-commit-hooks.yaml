@@ -3,12 +3,71 @@
 # which hooks are provided by this repo
 # for use by other git repos.
 
-- id: shellcheck
-  name: Test shell scripts with shellcheck
-  description: Shell scripts conform to shellcheck
-  entry: scripts/shellcheck.sh
-  language: script
-  types: [shell]
-  # https://github.com/koalaman/shellcheck/wiki/SC1091
-  args: [-e, SC1091]
-  additional_dependencies: [shellcheck]
+-   id: flake8
+    name: flake8
+    description: Python style guide enforcement.
+    entry: flake8
+    # args: ["--config=configs/setup.cfg"]
+    additional_dependencies: [
+        flake8,
+        flake8-2020, # flake8 plugin which checks for misuse of `sys.version` or `sys.version_info`
+        flake8-blind-except, # A flake8 extension that checks for blind except: statements
+        flake8-bugbear, # A plugin for flake8 finding likely bugs and design problems in your program.
+                        # Contains warnings that don't belong in pyflakes and pycodestyle.
+        flake8-builtins, # Check for python builtins being used as variables or parameters.
+        flake8-comprehensions, # It helps you write better list/set/dict comprehensions.
+        flake8-copyright, # Adds copyright checks to flake8
+        flake8-deprecated, # Warns about deprecated method calls.
+        dlint, # Dlint is a tool for encouraging best coding practices and helping ensure we're writing secure Python code.
+        flake8-docstrings, # Extension for flake8 which uses pydocstyle to check docstrings
+        # flake8-eradicate, # Flake8 plugin to find commented out code
+        flake8-license,
+        pandas-vet, # A Flake8 plugin that provides opinionated linting for pandas code
+        flake8-pytest, # pytest assert checker plugin for flake8
+        flake8-variables-names, # flake8 extension that helps to make more readable variables names
+        flake8-tabs, # Tab (or Spaces) indentation style checker for flake8
+        pep8-naming, # Check PEP-8 naming conventions, plugin for flake8
+    ]
+    language: python
+    types: [python]
+    require_serial: true
+
+-   id: shellcheck
+    name: Test shell scripts with shellcheck
+    description: Shell scripts conform to shellcheck
+    entry: scripts/shellcheck.sh
+    language: script
+    types: [shell]
+    # https://github.com/koalaman/shellcheck/wiki/SC1091
+    args: [-e, SC1091]
+    additional_dependencies: [shellcheck]
+
+-   id: prepend-jira-link
+    name: prepend-jira-link
+    description: Append JIRA ticket number and link below commit message,
+                if branch name contains ticket number.
+    entry: scripts/prepender-jira-link.sh
+    language: script
+    stages: [prepare-commit-msg]
+
+-   id: pytest
+    name: Run Pytest
+    description: Run Python unit-tests
+    entry: pytest
+    # args: ["-sv"]
+    language: python
+    types: [python]
+    language_version: python
+    require_serial: true
+    stages: [push]
+    additional_dependencies: [pytest]
+
+-   id: black
+    name: black
+    description: "Black: The uncompromising Python code formatter"
+    entry: black
+    language: python
+    language_version: python3
+    require_serial: true
+    types: [python]
+    additional_dependencies: [black]
