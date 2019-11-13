@@ -116,3 +116,99 @@
     types: [python]
     require_serial: true
     additional_dependencies: [pydocstyle]
+
+-   id: mypy
+    name: mypy
+    description: Optional static typing for Python 3 and 2 (PEP 484)
+    entry: mypy
+    language: python
+    types: [python]
+    additional_dependencies: [mypy]
+
+# YAML Linter
+-   id: yamllint
+    name: yamllint
+    description: A linter for YAML files.
+    # https://yamllint.readthedocs.io/en/stable/configuration.html#custom-configuration-without-a-config-file
+    entry: yamllint
+    args: [
+        '--format', 'parsable',
+        '--strict',
+        '-d', "{
+            extends: relaxed,
+            rules: {
+                hyphens: {max-spaces-after: 4},
+                indentation: {spaces: consistent, indent-sequences: whatever,},
+                key-duplicates: {},
+                line-length: {max: 90}},
+            }"
+    ]
+    language: system
+    types: [python]
+    additional_dependencies: [yamllint]
+
+# Prose (speech or writing) Linter
+-   id: proselint
+    name: proselint
+    description: An English prose (speech or writing) linter
+    entry: proselint
+    language: system
+    types: [ rst, markdown ]
+    additional_dependencies: [proselint]
+
+-   id: wily
+    name: wily
+    description: Tracking, reporting complexity of Python applications.
+    entry: wily diff
+    verbose: true
+    language: python
+    types: [python]
+    require_serial: true
+    additional_dependencies: [wily]
+
+# Python minor syntax related checks
+# https://github.com/Pike/pygrep
+-   id: python-check-mock-methods
+    name: python-check-mock-methods
+    description: Prevent common mistakes of `assert mck.not_called()`, `assert mck.called_once_with(...)`
+                and `mck.assert_called`.
+    language: pygrep
+    entry: >
+        (?x)(
+            assert .*\.(
+                not_called|
+                called_
+            )|
+            \.assert_(
+                any_call|
+                called|
+                called_once|
+                called_once_with|
+                called_with|
+                has_calls|
+                not_called
+            )($|[^(\w])
+        )
+    types: [python]
+
+-   id: python-no-eval
+    name: python-no-eval
+    description: A quick check for the `eval()` built-in function.
+    entry: '\beval\('
+    language: pygrep
+    types: [python]
+
+-   id: python-no-log-warn
+    name: python-no-log-warn
+    description: A quick check for the deprecated `.warn()` method of python loggers.
+    entry: '(?<!warnings)\.warn\('
+    language: pygrep
+    types: [python]
+
+-   id: python-use-type-annotations
+    name: python-use-type-annotations
+    description: Enforce that python3.6+ type annotations are used instead of type comments.
+    entry: '# type(?!: *ignore *($|#))'
+    language: pygrep
+    types: [python]
+

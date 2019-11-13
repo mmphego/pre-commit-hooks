@@ -10,164 +10,22 @@ default_language_version:
 repos:
     ####################################### Various Checks ###############################
     # Various checks
-    -   repo: https://github.com/pre-commit/pre-commit-hooks
-        rev: v2.4.0
+    -   repo: https://github.com/mmphego/pre-commit-hooks
+        rev: master
         hooks:
-        -   id: check-ast
-            name: check-ast
-            description: Simply check whether files parse as valid python.
-        -   id: check-builtin-literals
-            name: check-builtin-literals
-            description: Require literal syntax when initializing empty,
-                         or zero Python builtin types.
-        -   id: check-docstring-first
-            name: check-docstring-first
-            description: Checks for a common error of placing code before the docstring.
-        -   id: check-added-large-files
-            name: check-added-large-files
-            description: Prevent giant files from being committed.
-        -   id: check-merge-conflict
-            name: check-merge-conflict
-            description: Check for files that contain merge conflict strings.
-        -   id: check-symlinks
-            name: check-symlinks
-            description: Checks for symlinks which do not point to anything.
-        -   id: check-yaml
-            name: check-yaml
-            description: Attempts to load all yaml files to verify syntax.
-        -   id: check-toml
-            name: check-toml
-            description: Attempts to load all TOML files to verify syntax.
-        -   id: debug-statements
-            name: debug-statements
-            description: Check for debugger imports and py37+ breakpoint() calls in python source.
-        -   id: detect-private-key
-            name: detect-private-key
-            description: Checks for the existence of private keys.
-        -   id: end-of-file-fixer
-            name: end-of-file-fixer
-            description: Makes sure files end in a newline and only a newline.
-        -   id: trailing-whitespace
-            name: trailing-whitespace
-            description: Trims trailing whitespace
-        -   id: requirements-txt-fixer
-            name: requirements-txt-fixer
-            description: Sorts entries in requirements.txt
-
-    -   repo: local
-        hooks:
-        # Python minor syntax related checks
-        # https://github.com/Pike/pygrep
-        -   id: python-check-mock-methods
-            name: python-check-mock-methods
-            description: Prevent common mistakes of `assert mck.not_called()`, `assert mck.called_once_with(...)`
-                        and `mck.assert_called`.
-            language: pygrep
-            entry: >
-                (?x)(
-                    assert .*\.(
-                        not_called|
-                        called_
-                    )|
-                    \.assert_(
-                        any_call|
-                        called|
-                        called_once|
-                        called_once_with|
-                        called_with|
-                        has_calls|
-                        not_called
-                    )($|[^(\w])
-                )
-            types: [python]
-
-        -   id: python-no-eval
-            name: python-no-eval
-            description: A quick check for the `eval()` built-in function.
-            entry: '\beval\('
-            language: pygrep
-            types: [python]
-
-        -   id: python-no-log-warn
-            name: python-no-log-warn
-            description: A quick check for the deprecated `.warn()` method of python loggers.
-            entry: '(?<!warnings)\.warn\('
-            language: pygrep
-            types: [python]
-
-        -   id: python-use-type-annotations
-            name: python-use-type-annotations
-            description: Enforce that python3.6+ type annotations are used instead of type comments.
-            entry: '# type(?!: *ignore *($|#))'
-            language: pygrep
-            types: [python]
-
-        # Python security check
-        # https://bandit.readthedocs.io/en/latest/
-        -   id: bandit
-            name: bandit
-            description: Find common security issues in your Python code using bandit.
-            entry: bandit
-            args: [
-                '-ll',
-                '--ini', 'setup.cfg',
-                '--recursive',
-            ]
-            language: python
-            types: [python]
-
-    ####################################### Linters ######################################
-    -   repo: local
-        hooks:
-        # MyPy Linter
-        # https://mypy.readthedocs.io/en/latest/
-        -   id: mypy
-            name: mypy
-            description: Optional static typing for Python 3 and 2 (PEP 484)
-            entry: mypy
-            args: ["--config-file", "setup.cfg"]
-            language: python
-            types: [python]
-
-        # YAML Linter
-        -   id: yamllint
-            name: yamllint
-            description: A linter for YAML files.
-            # https://yamllint.readthedocs.io/en/stable/configuration.html#custom-configuration-without-a-config-file
-            entry: yamllint
-            args: [
-                '--format', 'parsable',
-                '--strict',
-                '-d', "{
-                    extends: relaxed,
-                    rules: {
-                        hyphens: {max-spaces-after: 4},
-                        indentation: {spaces: consistent, indent-sequences: whatever,},
-                        key-duplicates: {},
-                        line-length: {max: 90}},
-                    }"
-            ]
-            language: system
-            types: [python]
-            additional_dependencies: [yamllint]
-
-        # Prose (speech or writing) Linter
-        -   id: proselint
-            name: proselint
-            description: An English prose (speech or writing) linter
-            entry: proselint
-            language: system
-            types: [ rst, markdown ]
-            additional_dependencies: [proselint]
-
-
-    ################################### Code Analysis ####################################
-    -   repo: local
-        hooks:
-        -   id: wily
-            name: wily
-            description: Tracking, reporting complexity of Python applications.
-            entry: wily diff
-            verbose: true
-            language: python
-            additional_dependencies: [wily]
+            -   id: autopep8
+            -   id: black
+            -   id: flake8
+            -   id: isort
+            -   id: mypy
+            -   id: prepend-jira-link
+            -   id: proselint
+            -   id: pydocstyle
+            -   id: pytest
+            -   id: python-check-mock-methods
+            -   id: python-no-eval
+            -   id: python-no-log-warn
+            -   id: python-use-type-annotations
+            -   id: shellcheck
+            -   id: wily
+            -   id: yamllint
