@@ -41,14 +41,6 @@
     args: [-e, SC1091]
     additional_dependencies: [shellcheck]
 
--   id: prepend-jira-link
-    name: prepend-jira-link
-    description: Append JIRA ticket number and link below commit message,
-                if branch name contains ticket number.
-    entry: scripts/prepender-jira-link.sh
-    language: script
-    stages: [prepare-commit-msg]
-
 -   id: pytest
     name: Run Pytest
     description: Run Python unit-tests

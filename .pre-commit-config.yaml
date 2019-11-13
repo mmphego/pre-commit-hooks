@@ -18,7 +18,6 @@ repos:
         -   id: flake8
         -   id: isort
         -   id: mypy
-        -   id: prepend-jira-link
         -   id: proselint
         -   id: pydocstyle
         -   id: pytest
@@ -29,6 +28,11 @@ repos:
         -   id: shellcheck
         -   id: wily
         -   id: yamllint
+
+-   repo: https://github.com/mmphego/prepend-jira-ticket-link
+    rev: master
+    hooks:
+    -   id: prepend-jira-link
 
     -   repo: https://github.com/pre-commit/pre-commit-hooks
         rev: v2.4.0  # Use the ref you want to point at
@@ -52,3 +56,4 @@ repos:
         -   id: requirements-txt-fixer
         -   id: sort-simple-yaml
         -   id: trailing-whitespace
+
