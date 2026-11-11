@@ -1,6 +1,6 @@
 #!/bin/bash
 # Install pre-commit hooks globally
-# Author: Mpho Mphego <mpho112@gmail.com>
+# Author: Mpho Mphego
 
 RED=$(tput setaf 1)
 GREEN=$(tput setaf 2)
